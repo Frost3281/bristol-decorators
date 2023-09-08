@@ -4,7 +4,6 @@ version = "0.1.0"
 description = ""
 authors = ["Vitaliy.Mikhalchenko <Vitaliy.Mikhalchenko@bristolcapital.ru>"]
 readme = "README.md"
-packages = [{include = "bristol-log-decorator"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"

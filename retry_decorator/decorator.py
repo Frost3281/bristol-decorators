@@ -36,5 +36,6 @@ def retry(
                     max_delay *= backoff
                     if max_tries < 1:
                         final_err_callback(exc)
+                        break
         return f_retry
     return deco_retry

@@ -21,6 +21,7 @@ T_Ret = TypeVar("T_Ret")
 def log(
     logger_instance: Union[Logger, None] = None
 ) -> Callable[[Callable[P_Spec, T_Ret]], Callable[P_Spec, T_Ret]]:
+    """Декоратор для автоматического логирования данных о работе функции."""
     _logger: Logger = logger_instance or get_default_logger()  # type: ignore
 
     @overload
@@ -47,15 +48,10 @@ def log(
             **kwargs: P_Spec.kwargs,
         ) -> T_Ret:
             signature = get_signature_repr(*args, **kwargs)
-            _logger.debug(
-                f"function '{func.__name__}' called with args {signature}",
-            )
+            _log_start_function_work(_logger, func.__name__, signature)
             try:
                 result = await cast(Awaitable[T_Ret], func(*args, **kwargs))
-                _logger.debug(
-                    f"function '{func.__name__}' ended job with args {signature}, "
-                    + f"work_time = {time.perf_counter() - time_start}",
-                )
+                _log_finish_function_work(_logger, func.__name__, signature, time_start)
                 return result
             except Exception as exc:
                 _log_exception_with_raise(
@@ -71,15 +67,10 @@ def log(
             **kwargs: P_Spec.kwargs,
         ) -> T_Ret:
             signature = get_signature_repr(*args, **kwargs)
-            _logger.debug(
-                f"function '{func.__name__}' called with args {signature}",
-            )
+            _log_start_function_work(_logger, func.__name__, signature)
             try:
                 result = cast(T_Ret, func(*args, **kwargs))
-                _logger.debug(
-                    f"function '{func.__name__}' ended job with args {signature}, "
-                    + f"work_time = {time.perf_counter() - time_start}",
-                )
+                _log_finish_function_work(_logger, func.__name__, signature, time_start)
                 return result
             except Exception as exc:
                 _log_exception_with_raise(
@@ -110,3 +101,18 @@ def _log_exception_with_raise(
         + f"Function args: {signature}",
     )
     raise exc
+
+
+def _log_start_function_work(logger: Logger, func_name: str, signature: str) -> None:
+    logger.debug(
+        f"function '{func_name}' called with args {signature}",
+    )
+
+
+def _log_finish_function_work(
+    logger: Logger, func_name: str, signature: str, time_start: float,
+) -> None:
+    logger.debug(
+        f"function '{func_name}' ended job with args {signature}, "
+        + f"work_time = {time.perf_counter() - time_start}",
+    )

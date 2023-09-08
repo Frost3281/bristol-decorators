@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "bristol-decorators"
+version = "0.1.0"
+description = ""
+authors = ["Vitaliy.Mikhalchenko <Vitaliy.Mikhalchenko@bristolcapital.ru>"]
+readme = "README.md"
+packages = [{include = "bristol-log-decorator"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.2"
+mypy = "^1.5.1"
+pytest-asyncio = "^0.21.1"
+black = "^23.7.0"
+ruff = "^0.0.287"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

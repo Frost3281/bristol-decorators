@@ -1,4 +1,5 @@
 import inspect
+import time
 from functools import wraps
 from typing import (
     Awaitable,
@@ -38,6 +39,7 @@ def log(
         func: Union[Callable[P_Spec, T_Ret], Callable[P_Spec, Awaitable[T_Ret]]],
     ) -> Callable[P_Spec, T_Ret]:
         is_async_function = inspect.iscoroutinefunction(func)
+        time_start = time.perf_counter()
 
         @wraps(func)
         async def async_wrapper(
@@ -46,12 +48,13 @@ def log(
         ) -> T_Ret:
             signature = get_signature_repr(*args, **kwargs)
             _logger.debug(
-                f"function {func.__name__} called with args {signature}",
+                f"function '{func.__name__}' called with args {signature}",
             )
             try:
                 result = await cast(Awaitable[T_Ret], func(*args, **kwargs))
                 _logger.debug(
-                    f"function {func.__name__} ended job with args {signature}",
+                    f"function '{func.__name__}' ended job with args {signature}, " +
+                    f"work_time = {time.perf_counter() - time_start}",
                 )
                 return result
             except Exception as exc:
@@ -69,12 +72,13 @@ def log(
         ) -> T_Ret:
             signature = get_signature_repr(*args, **kwargs)
             _logger.debug(
-                f"function {func.__name__} called with args {signature}",
+                f"function '{func.__name__}' called with args {signature}",
             )
             try:
                 result = cast(T_Ret, func(*args, **kwargs))
                 _logger.debug(
-                    f"function {func.__name__} ended job with args {signature}",
+                    f"function '{func.__name__}' ended job with args {signature}, " +
+                    f"work_time = {time.perf_counter() - time_start}",
                 )
                 return result
             except Exception as exc:
@@ -101,7 +105,7 @@ def _log_exception_with_raise(
     signature: str,
 ):
     logger.exception(
-        f"Exception raised in {func_name}. "
+        f"Exception raised in '{func_name}'. "
         + f"Description: {repr(exc)}"
         + f"Function args: {signature}",
     )

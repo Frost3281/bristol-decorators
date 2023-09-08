@@ -5,7 +5,7 @@ from typing import Any
 
 def get_default_logger() -> Logger:
     """Получаем дефолтный логгер."""
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger()
     logger.setLevel(logging.INFO)
     logger.addHandler(logging.StreamHandler())
     return logger

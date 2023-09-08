@@ -4,6 +4,7 @@ import pytest
 
 from bristol_log_decorator.log_decorator import log
 from tests.conftest import MockLogger
+from tests.services import check_msg_from_list_contains_text
 
 
 def sync_func_logging_testing(arg1: int, arg2: str) -> str:
@@ -20,13 +21,13 @@ def test_sync_function_logs_start_and_end(mock_logger: MockLogger):
     decorated = log(mock_logger)(sync_func_logging_testing)
     result = decorated(10, "abc")
     assert result == "10 abc"
-    assert (
-        f"function {sync_func_logging_testing.__name__} called with args 10, 'abc'"
-        in mock_logger.logged_messages
+    assert check_msg_from_list_contains_text(
+        f"function '{sync_func_logging_testing.__name__}' called with args 10, 'abc'",
+        mock_logger.logged_messages,
     )
-    assert (
-        f"function {sync_func_logging_testing.__name__} ended job with args 10, 'abc'"
-        in mock_logger.logged_messages
+    assert check_msg_from_list_contains_text(
+        f"function '{sync_func_logging_testing.__name__}' ended job with args 10, 'abc'",
+        mock_logger.logged_messages,
     )
 
 
@@ -34,10 +35,8 @@ def test_sync_function_logs_exception(mock_logger: MockLogger):
     decorated = log(mock_logger)(sync_func_logging_testing)
     with pytest.raises(TypeError):
         decorated(10, "", None)  # type: ignore
-    assert any(
-        [
-            msg.startswith(f"Exception raised in {sync_func_logging_testing.__name__}")
-            for msg in mock_logger.logged_messages
-        ]
+    assert check_msg_from_list_contains_text(
+        f"Exception raised in '{sync_func_logging_testing.__name__}'",
+        mock_logger.logged_messages,
     )
-    assert any([msg.__contains__("TypeError") for msg in mock_logger.logged_messages])
+    assert check_msg_from_list_contains_text("TypeError", mock_logger.logged_messages)

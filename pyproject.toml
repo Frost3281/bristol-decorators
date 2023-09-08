@@ -4,11 +4,10 @@ version = "0.1.0"
 description = ""
 authors = ["Vitaliy.Mikhalchenko <Vitaliy.Mikhalchenko@bristolcapital.ru>"]
 readme = "README.md"
+packages = [{include = "bristol_log_decorator"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-loguru = "^0.7.1"
-
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.2"

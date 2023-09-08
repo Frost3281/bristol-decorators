@@ -1,4 +1,5 @@
-from typing import Any
+from typing import Any, Iterator
+from unittest.mock import patch
 
 import pytest
 
@@ -19,3 +20,9 @@ class MockLogger:
 @pytest.fixture()
 def mock_logger() -> MockLogger:
     return MockLogger()
+
+
+@pytest.fixture(autouse=True)
+def patch_sleep() -> Iterator[None]:
+    with patch("time.sleep", return_value=None):
+        yield

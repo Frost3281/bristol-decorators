@@ -53,8 +53,8 @@ def log(
             try:
                 result = await cast(Awaitable[T_Ret], func(*args, **kwargs))
                 _logger.debug(
-                    f"function '{func.__name__}' ended job with args {signature}, " +
-                    f"work_time = {time.perf_counter() - time_start}",
+                    f"function '{func.__name__}' ended job with args {signature}, "
+                    + f"work_time = {time.perf_counter() - time_start}",
                 )
                 return result
             except Exception as exc:
@@ -77,8 +77,8 @@ def log(
             try:
                 result = cast(T_Ret, func(*args, **kwargs))
                 _logger.debug(
-                    f"function '{func.__name__}' ended job with args {signature}, " +
-                    f"work_time = {time.perf_counter() - time_start}",
+                    f"function '{func.__name__}' ended job with args {signature}, "
+                    + f"work_time = {time.perf_counter() - time_start}",
                 )
                 return result
             except Exception as exc:
